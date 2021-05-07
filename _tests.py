@@ -2,9 +2,8 @@ import threading
 import pytest
 from ship import Ship
 from game import Game
-from utils import print_centered
 
-SHIP_COUNT = 50
+SHIP_COUNT = 10
 
 
 # --------------------------------------- Ship Tests ---------------------------------------
@@ -45,11 +44,6 @@ def test_ship_take_damage():
     with pytest.raises(Exception):
         ship._take_damage(1)
 
-
-def test_ship_check_attack_condition():
-    ship = Ship("Ship")
-    with pytest.raises(Exception):
-        ship._check_attack_conditions(target=ship)
 
 # --------------------------------------- Game Tests ---------------------------------------
 

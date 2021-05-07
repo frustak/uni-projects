@@ -1,9 +1,8 @@
 import threading
 from random import randrange
-from typing import Callable, List
+from typing import List
 from ship import Ship
 from utils import print_centered, wait_for_threads
-import logging
 
 
 class Game:
@@ -32,6 +31,11 @@ class Game:
         else:
             print_centered(f"Winner: None!")
 
+    def _spawn_ships(self):
+        """Spawn all the ships"""
+        for i in range(self._ship_counts()):
+            self._ships[i] = Ship(f"Ship {i + 1}")
+
     def _command_ships_to_begin(self) -> List[threading.Thread]:
         """Start each ship logic in an individual thread and return the threads."""
         threads: List[threading.Thread] = list()
@@ -41,11 +45,6 @@ class Game:
             thread.start()
             threads.append(thread)
         return threads
-
-    def _spawn_ships(self):
-        """Spawn all the ships"""
-        for i in range(self._ship_counts()):
-            self._ships[i] = Ship(f"Ship {i + 1}")
 
     def _get_random_ship(self, excluded_ship: Ship) -> Ship:
         """Get another random ship different than excluded."""

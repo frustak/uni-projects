@@ -27,7 +27,8 @@ class Ship:
 
     def fire_at(self, target: "Ship"):
         """Commands current ship to fire at another one."""
-        self._check_attack_conditions(target)
+        if self == target:
+            raise Exception("Cannot attack itself!")
         target._take_damage(Ship.FIRE_DAMAGE)
         print(f"{self.name} fired at the {target.name}.")
         self._print_if_drowned(target)
@@ -43,11 +44,6 @@ class Ship:
         else:
             raise Exception(
                 f"Cannot damage a destroyed ship! ship name:{self.name}")
-
-    def _check_attack_conditions(self, target: "Ship"):
-        """Check conditions to not attack another ship."""
-        if self == target:
-            raise Exception("Cannot attack itself!")
 
     def _print_if_drowned(self, target: "Ship"):
         """Print a message if target is drowned."""
