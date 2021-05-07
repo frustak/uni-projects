@@ -4,7 +4,7 @@ from ship import Ship
 from game import Game
 from utils import print_centered
 
-SHIP_COUNT = 5
+SHIP_COUNT = 50
 
 
 # --------------------------------------- Ship Tests ---------------------------------------
@@ -75,7 +75,7 @@ def test_game_start():
 def test_game_battle_end():
     game = init_new_game()
     game.start().battle().end()
-    assert game._ship_counts() == 1
+    assert game._has_winner() or game._ship_counts() == 0
 
 
 def test_game_get_random_ship():
@@ -113,30 +113,11 @@ def test_game_run_logic():
 
 def test_game_ship_counts():
     game = init_new_game()
-    assert game._ship_counts() == 5
+    assert game._ship_counts() == SHIP_COUNT
 
 
 def test_game_has_winner():
     game = init_new_game().start()
     assert game._has_winner() == False
     game.battle().end()
-    assert game._has_winner()
-
-
-def test_game_get_winner():
-    game = init_new_game().start()
-    assert game._get_winner() == None
-    game.battle().end()
-    assert type(game._get_winner()) is Ship
-
-
-def test_game_check_has_ended():
-    game = Game(ship_count=2)
-    with pytest.raises(Exception):
-        game._check_has_ended()
-
-
-def test_game_check_has_not_ended():
-    game = Game(ship_count=1)
-    with pytest.raises(Exception):
-        game._check_has_not_ended()
+    assert game._has_winner() or game._ship_counts == 0

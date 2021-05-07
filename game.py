@@ -3,6 +3,7 @@ from random import randrange
 from typing import Callable, List
 from ship import Ship
 from utils import print_centered, wait_for_threads
+import logging
 
 
 class Game:
@@ -25,9 +26,11 @@ class Game:
 
     def end(self):
         """End the game."""
-        self._check_has_ended()
         print_centered("END WAR")
-        print_centered(f"Winner: {self._get_winner().name}")
+        if self._has_winner():
+            print_centered(f"Winner: {self._get_winner().name}")
+        else:
+            print_centered(f"Winner: None!")
 
     def _command_ships_to_begin(self) -> List[threading.Thread]:
         """Start each ship logic in an individual thread and return the threads."""
@@ -46,7 +49,8 @@ class Game:
 
     def _get_random_ship(self, excluded_ship: Ship) -> Ship:
         """Get another random ship different than excluded."""
-        self._check_has_not_ended()
+        if self._has_winner():
+            raise Exception("Game has ended!")
         ship_count = self._ship_counts()
         index = randrange(start=0, stop=ship_count)
         if self._ships[index] == excluded_ship:
@@ -70,15 +74,17 @@ class Game:
             attacker.fire_at(target)
             if target.is_destroyed():
                 self._ships.remove(target)
-        except:
+        except ValueError:
+            pass
+        except Exception as e:
             if not self._has_winner():
                 self._command_fire(attacker=attacker)
 
     def _run_logic(self, current_ship: Ship):
         """Run game logic for a single ship."""
         while not current_ship.is_destroyed() and not self._has_winner():
-            self._command_prepare(ship=current_ship)._command_fire(
-                attacker=current_ship)
+            self._command_prepare(ship=current_ship)
+            self._command_fire(attacker=current_ship)
 
     def _ship_counts(self) -> int:
         """Return total number of afloat ships."""
@@ -92,13 +98,3 @@ class Game:
         """Get the winner ship if there's a winner yet."""
         if self._has_winner():
             return self._ships[0]
-
-    def _check_has_ended(self):
-        """Check if a game has ended."""
-        if not self._has_winner():
-            raise Exception("Game has no winner yet!")
-
-    def _check_has_not_ended(self):
-        """Check if a game has not ended yet."""
-        if self._has_winner():
-            raise Exception("Game has not ended yet!")

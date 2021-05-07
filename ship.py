@@ -28,8 +28,8 @@ class Ship:
     def fire_at(self, target: "Ship"):
         """Commands current ship to fire at another one."""
         self._check_attack_conditions(target)
-        print(f"{self.name} fired at the {target.name}.")
         target._take_damage(Ship.FIRE_DAMAGE)
+        print(f"{self.name} fired at the {target.name}.")
         self._print_if_drowned(target)
 
     def is_destroyed(self) -> bool:
@@ -41,7 +41,8 @@ class Ship:
         if self._hit_points > 0:
             self._hit_points -= amount
         else:
-            raise Exception("Cannot damage a destroyed ship!")
+            raise Exception(
+                f"Cannot damage a destroyed ship! ship name:{self.name}")
 
     def _check_attack_conditions(self, target: "Ship"):
         """Check conditions to not attack another ship."""
